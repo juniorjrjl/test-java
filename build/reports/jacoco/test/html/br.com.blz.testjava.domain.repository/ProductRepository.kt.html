@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ProductRepository.kt</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">test-java</a> &gt; <a href="index.source.html" class="el_package">br.com.blz.testjava.domain.repository</a> &gt; <span class="el_source">ProductRepository.kt</span></div><h1>ProductRepository.kt</h1><pre class="source lang-java linenums">package br.com.blz.testjava.domain.repository
+
+import br.com.blz.testjava.domain.model.ProductModel
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
+import org.springframework.stereotype.Repository
+import reactor.core.publisher.Mono
+import javax.management.InvalidAttributeValueException
+
+<span class="fc" id="L10">@Repository</span>
+<span class="fc" id="L11">class ProductRepository {</span>
+
+  companion object {
+<span class="fc" id="L14">    private val log: Logger = LoggerFactory.getLogger(ProductRepository::class.java)</span>
+  }
+
+<span class="fc" id="L17">  private var products: MutableList&lt;ProductModel&gt; = arrayListOf()</span>
+
+<span class="fc" id="L19">  fun save(model: ProductModel): Mono&lt;ProductModel&gt; = Mono.just(model)</span>
+<span class="fc" id="L20">    .map {</span>
+<span class="fc" id="L21">      products.add(it)</span>
+<span class="fc" id="L22">      it</span>
+<span class="fc" id="L23">    }.doFirst { log.info(&quot; ==== inserting a follow product [{}]&quot;, model) }</span>
+
+<span class="fc" id="L25">  fun delete(sku: Long):Mono&lt;Void&gt; = Mono.fromCallable {</span>
+<span class="pc bpc" id="L26" title="2 of 6 branches missed.">    products = products.filterNot { it.sku?.equals(sku) ?: throw InvalidAttributeValueException() }.toMutableList()</span>
+<span class="fc" id="L27">    products</span>
+  }
+<span class="fc" id="L29">    .doFirst { log.info(&quot; ==== deleting a product with follow sku [{}]&quot;, sku) }</span>
+<span class="fc" id="L30">    .then()</span>
+
+<span class="fc" id="L32">  fun update(model: ProductModel):Mono&lt;ProductModel&gt; = Mono.fromCallable {</span>
+<span class="pc bpc" id="L33" title="2 of 6 branches missed.">    val indexToUpdate = products.indexOf(products.singleOrNull { it.sku?.equals(model.sku) ?: throw InvalidAttributeValueException() })</span>
+<span class="fc bfc" id="L34" title="All 2 branches covered.">    products = products.mapIndexed { i, p -&gt; if (i == indexToUpdate)  model else p }.toMutableList() }</span>
+<span class="fc" id="L35">    .doFirst { log.info(&quot; ==== updating a follow product [{}]&quot;, model) }</span>
+<span class="fc" id="L36">    .thenReturn(model)</span>
+
+<span class="pc bpc" id="L38" title="2 of 6 branches missed.">  fun findBySku(sku: Long):Mono&lt;ProductModel&gt; = Mono.justOrEmpty(products.singleOrNull { it.sku?.equals(sku) ?: throw InvalidAttributeValueException() })</span>
+<span class="fc" id="L39">    .doFirst { log.info(&quot; ==== getting a product with follow sku [{}]&quot;, sku) }</span>
+
+<span class="pc bpc" id="L41" title="1 of 4 branches missed.">  fun hasWithSku(sku: Long):Mono&lt;Boolean&gt; = Mono.just(products.firstOrNull { it.sku?.equals(sku) ?: false } != null)</span>
+<span class="fc" id="L42">    .doFirst { log.info(&quot; ==== checking if has product with sku [{}]&quot;, sku) }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="br.com.blz.testjava.core.converter.WarehousesTypeEnumConverterTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2021-07-04T17:24:54" hostname="jose-Inspiron-5590" time="0.084">
+  <properties/>
+  <testcase name="testConvertInvalid()" classname="br.com.blz.testjava.core.converter.WarehousesTypeEnumConverterTest" time="0.071"/>
+  <testcase name="[1] value=ECOMMERCE" classname="br.com.blz.testjava.core.converter.WarehousesTypeEnumConverterTest" time="0.002"/>
+  <testcase name="[2] value=PHYSICAL_STORE" classname="br.com.blz.testjava.core.converter.WarehousesTypeEnumConverterTest" time="0.001"/>
+  <testcase name="[3] value=ecommerce" classname="br.com.blz.testjava.core.converter.WarehousesTypeEnumConverterTest" time="0.001"/>
+  <testcase name="[4] value=physical_store" classname="br.com.blz.testjava.core.converter.WarehousesTypeEnumConverterTest" time="0.001"/>
+  <system-out><![CDATA[2021-07-04 14:24:54.879  INFO 15830 --- [    Test worker] b.c.b.t.c.c.WarehousesTypeEnumConverter  : try to convert Not if anything to say about it I have to class br.com.blz.testjava.domain.model.type.WarehousesType
+2021-07-04 14:24:54.879 ERROR 15830 --- [    Test worker] b.c.b.t.c.c.WarehousesTypeEnumConverter  : error to convert Not if anything to say about it I have to class br.com.blz.testjava.domain.model.type.WarehousesType
+2021-07-04 14:24:54.884  INFO 15830 --- [    Test worker] b.c.b.t.c.c.WarehousesTypeEnumConverter  : try to convert ECOMMERCE to class br.com.blz.testjava.domain.model.type.WarehousesType
+2021-07-04 14:24:54.887  INFO 15830 --- [    Test worker] b.c.b.t.c.c.WarehousesTypeEnumConverter  : try to convert PHYSICAL_STORE to class br.com.blz.testjava.domain.model.type.WarehousesType
+2021-07-04 14:24:54.889  INFO 15830 --- [    Test worker] b.c.b.t.c.c.WarehousesTypeEnumConverter  : try to convert ecommerce to class br.com.blz.testjava.domain.model.type.WarehousesType
+2021-07-04 14:24:54.892  INFO 15830 --- [    Test worker] b.c.b.t.c.c.WarehousesTypeEnumConverter  : try to convert physical_store to class br.com.blz.testjava.domain.model.type.WarehousesType
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

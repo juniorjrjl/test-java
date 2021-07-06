@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ControllerExceptionHandler.kt</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">test-java</a> &gt; <a href="index.source.html" class="el_package">br.com.blz.testjava.api.exceptionhandler</a> &gt; <span class="el_source">ControllerExceptionHandler.kt</span></div><h1>ControllerExceptionHandler.kt</h1><pre class="source lang-java linenums">package br.com.blz.testjava.api.exceptionhandler
+
+import br.com.blz.testjava.domain.exception.ConflictException
+import br.com.blz.testjava.domain.exception.ModelNotFoundException
+import br.com.blz.testjava.domain.exception.ProductNotFoundException
+import br.com.blz.testjava.domain.exception.TestJavaException
+import org.hibernate.validator.internal.engine.path.PathImpl
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
+import org.springframework.context.MessageSource
+import org.springframework.context.i18n.LocaleContextHolder
+import org.springframework.http.HttpStatus
+import org.springframework.validation.FieldError
+import org.springframework.web.bind.annotation.ExceptionHandler
+import org.springframework.web.bind.annotation.ResponseStatus
+import org.springframework.web.bind.annotation.RestControllerAdvice
+import org.springframework.web.bind.support.WebExchangeBindException
+import java.time.OffsetDateTime
+import javax.validation.ConstraintViolationException
+
+<span class="fc" id="L21">@RestControllerAdvice</span>
+<span class="pc" id="L22">class ControllerExceptionHandler(var messageSource: MessageSource) {</span>
+
+  companion object {
+<span class="fc" id="L25">    @JvmStatic private val log: Logger = LoggerFactory.getLogger(ControllerExceptionHandler::class.java)</span>
+  }
+
+<span class="fc" id="L28">  private val errorMessageTitleCode = &quot;ResponseError.message&quot;</span>
+
+  @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+  @ExceptionHandler(Exception::class)
+  fun handleGenericException(ex: Exception): ProblemResponse{
+<span class="nc" id="L33">    log.error(&quot;=== ConstraintViolationException&quot;, ex)</span>
+<span class="nc" id="L34">    return buildError(HttpStatus.INTERNAL_SERVER_ERROR.value(), getMessage(errorMessageTitleCode),</span>
+<span class="nc" id="L35">      getMessage(&quot;GenericException.message&quot;)).build()</span>
+  }
+
+  @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+  @ExceptionHandler(TestJavaException::class)
+  fun handleTestJavaException(ex: TestJavaException): ProblemResponse{
+<span class="nc" id="L41">    log.error(&quot;=== ConstraintViolationException&quot;, ex)</span>
+<span class="nc" id="L42">    return buildError(HttpStatus.INTERNAL_SERVER_ERROR.value(), getMessage(errorMessageTitleCode),</span>
+<span class="nc" id="L43">      getMessage(&quot;GenericException.message&quot;)).build()</span>
+  }
+
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  @ExceptionHandler(ConstraintViolationException::class)
+  fun handleConstraintViolationException(ex: ConstraintViolationException): ProblemResponse{
+<span class="nc" id="L49">    log.error(&quot;=== ConstraintViolationException&quot;, ex)</span>
+<span class="nc" id="L50">    val errorFields = ex.constraintViolations</span>
+<span class="nc" id="L51">      .map { FieldErrorResponse.Builder()</span>
+<span class="nc" id="L52">        .withField((it.propertyPath as PathImpl).leafNode.toString())</span>
+<span class="nc" id="L53">        .withErrorMessage(it.message)</span>
+<span class="nc" id="L54">        .build()</span>
+<span class="nc" id="L55">      }.toMutableList()</span>
+<span class="nc" id="L56">    return buildError(HttpStatus.BAD_REQUEST.value(), getMessage(errorMessageTitleCode),</span>
+<span class="nc" id="L57">      getMessage(&quot;RequestWithErrors.message&quot;)).withFields(errorFields).build()</span>
+  }
+
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  @ExceptionHandler(WebExchangeBindException::class)
+  fun handleWebExchangeBindException(ex: WebExchangeBindException): ProblemResponse{
+<span class="fc" id="L63">    log.error(&quot;=== WebExchangeBindException -&gt; {}&quot;, ex.localizedMessage)</span>
+<span class="fc" id="L64">    val errorFields = ex.allErrors.map {</span>
+<span class="fc" id="L65">      var fieldError = it.objectName</span>
+<span class="pc bpc" id="L66" title="1 of 2 branches missed.">      if (it is FieldError){</span>
+<span class="fc" id="L67">        fieldError = it.field</span>
+      }
+<span class="fc" id="L69">      FieldErrorResponse.Builder()</span>
+<span class="fc" id="L70">        .withField(fieldError)</span>
+<span class="fc" id="L71">        .withErrorMessage(messageSource.getMessage(it, LocaleContextHolder.getLocale()))</span>
+<span class="fc" id="L72">        .build()</span>
+<span class="fc" id="L73">    }.toMutableList()</span>
+<span class="fc" id="L74">    return buildError(HttpStatus.BAD_REQUEST.value(), getMessage(errorMessageTitleCode),</span>
+<span class="fc" id="L75">      getMessage(&quot;RequestWithErrors.message&quot;)).withFields(errorFields).build()</span>
+  }
+
+  @ResponseStatus(HttpStatus.NOT_FOUND)
+  @ExceptionHandler(ProductNotFoundException::class)
+  fun handleProductNotFoundException(ex: ProductNotFoundException): ProblemResponse{
+<span class="fc" id="L81">    log.error(&quot;=== ProductNotFoundException&quot;, ex)</span>
+<span class="fc" id="L82">    return buildError(HttpStatus.NOT_FOUND.value(), getMessage(errorMessageTitleCode), ex.message!!).build()</span>
+  }
+
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  @ExceptionHandler(ConflictException::class)
+  fun handleConflictException(ex: ConflictException): ProblemResponse{
+<span class="fc" id="L88">    log.error(&quot;=== ConflictException&quot;, ex)</span>
+<span class="fc" id="L89">    return buildError(HttpStatus.BAD_REQUEST.value(), getMessage(errorMessageTitleCode), ex.message!!).build()</span>
+  }
+
+<span class="fc" id="L92">  private fun buildError(status: Int, title: String, details: String) = ProblemResponse.Builder()</span>
+<span class="fc" id="L93">    .withTimestamp(OffsetDateTime.now())</span>
+<span class="fc" id="L94">    .withStatus(status)</span>
+<span class="fc" id="L95">    .withTitle(title)</span>
+<span class="fc" id="L96">    .withDetails(details)</span>
+
+<span class="fc" id="L98">  private fun getMessage(code: String, args: Array&lt;Any&gt; = emptyArray()):String =</span>
+<span class="fc" id="L99">    messageSource.getMessage(code, args, LocaleContextHolder.getLocale())</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>WebConfig.kt</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">test-java</a> &gt; <a href="index.source.html" class="el_package">br.com.blz.testjava.core</a> &gt; <span class="el_source">WebConfig.kt</span></div><h1>WebConfig.kt</h1><pre class="source lang-java linenums">package br.com.blz.testjava.core
+
+import br.com.blz.testjava.core.converter.WarehousesTypeEnumConverter
+import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Profile
+import org.springframework.format.FormatterRegistry
+import org.springframework.http.codec.ServerCodecConfigurer
+import org.springframework.http.codec.json.Jackson2JsonDecoder
+import org.springframework.http.codec.json.Jackson2JsonEncoder
+import org.springframework.validation.Validator
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean
+import org.springframework.web.reactive.config.WebFluxConfigurer
+
+<span class="nc" id="L14">@Configuration</span>
+@Profile(&quot;!test&quot;)
+<span class="nc" id="L16">class WebConfig(private var encoder: Jackson2JsonEncoder,</span>
+<span class="nc" id="L17">                private var decoder: Jackson2JsonDecoder,</span>
+<span class="nc" id="L18">                private var localValidatorFactoryBean: LocalValidatorFactoryBean): WebFluxConfigurer {</span>
+
+
+  override fun configureHttpMessageCodecs(configurer: ServerCodecConfigurer) {
+<span class="nc" id="L22">    configurer.defaultCodecs().jackson2JsonEncoder(encoder)</span>
+<span class="nc" id="L23">    configurer.defaultCodecs().jackson2JsonDecoder(decoder)</span>
+<span class="nc" id="L24">  }</span>
+
+  override fun addFormatters(registry: FormatterRegistry) {
+<span class="nc" id="L27">    registry.addConverter(WarehousesTypeEnumConverter())</span>
+<span class="nc" id="L28">    super.addFormatters(registry)</span>
+<span class="nc" id="L29">  }</span>
+
+  override fun getValidator(): Validator? {
+<span class="nc" id="L32">    return localValidatorFactoryBean</span>
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

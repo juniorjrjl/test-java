@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ProblemResponse.kt</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">test-java</a> &gt; <a href="index.source.html" class="el_package">br.com.blz.testjava.api.exceptionhandler</a> &gt; <span class="el_source">ProblemResponse.kt</span></div><h1>ProblemResponse.kt</h1><pre class="source lang-java linenums">package br.com.blz.testjava.api.exceptionhandler
+
+import com.fasterxml.jackson.annotation.JsonInclude
+import com.fasterxml.jackson.annotation.JsonInclude.Include
+import java.time.OffsetDateTime
+
+<span class="fc" id="L7">@JsonInclude(Include.NON_NULL)</span>
+<span class="pc" id="L8">data class ProblemResponse(var status: Int?,</span>
+<span class="pc" id="L9">                           var timestamp: OffsetDateTime?,</span>
+<span class="pc" id="L10">                           var title: String?,</span>
+<span class="pc" id="L11">                           var details: String?,</span>
+<span class="pc" id="L12">                           var fields: MutableList&lt;FieldErrorResponse&gt;?){</span>
+
+<span class="fc" id="L14">  class Builder{</span>
+<span class="pc" id="L15">    var status: Int? = null</span>
+<span class="pc" id="L16">    var timestamp: OffsetDateTime? = null</span>
+<span class="pc" id="L17">    var title: String? = null</span>
+<span class="pc" id="L18">    var details: String? = null</span>
+<span class="pc" id="L19">    var fields: MutableList&lt;FieldErrorResponse&gt;? = null</span>
+
+<span class="fc" id="L21">    fun withStatus(status: Int) = apply { this.status = status }</span>
+<span class="fc" id="L22">    fun withTimestamp(timestamp: OffsetDateTime) = apply { this.timestamp = timestamp }</span>
+<span class="fc" id="L23">    fun withTitle(title: String) = apply { this.title = title }</span>
+<span class="fc" id="L24">    fun withDetails(details: String) = apply { this.details = details }</span>
+<span class="fc" id="L25">    fun withFields(fields: MutableList&lt;FieldErrorResponse&gt;) = apply { this.fields = fields }</span>
+<span class="fc" id="L26">    fun build() = ProblemResponse(status, timestamp, title, details, fields)</span>
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

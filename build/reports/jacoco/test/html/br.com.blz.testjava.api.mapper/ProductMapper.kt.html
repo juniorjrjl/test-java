@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ProductMapper.kt</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">test-java</a> &gt; <a href="index.source.html" class="el_package">br.com.blz.testjava.api.mapper</a> &gt; <span class="el_source">ProductMapper.kt</span></div><h1>ProductMapper.kt</h1><pre class="source lang-java linenums">package br.com.blz.testjava.api.mapper
+
+import br.com.blz.testjava.api.controller.request.insert.ProductInsertRequest
+import br.com.blz.testjava.api.controller.request.update.ProductUpdateRequest
+import br.com.blz.testjava.api.controller.response.inserted.ProductInsertedResponse
+import br.com.blz.testjava.api.controller.response.inserted.ProductInventoryInsertedResponse
+import br.com.blz.testjava.api.controller.response.inserted.ProductWarehouseInsertedResponse
+import br.com.blz.testjava.api.controller.response.search.ProductInventorySearchResponse
+import br.com.blz.testjava.api.controller.response.search.ProductSearchResponse
+import br.com.blz.testjava.api.controller.response.search.ProductWarehouseSearchResponse
+import br.com.blz.testjava.api.controller.response.updated.ProductInventoryUpdatedResponse
+import br.com.blz.testjava.api.controller.response.updated.ProductUpdatedResponse
+import br.com.blz.testjava.api.controller.response.updated.ProductWarehouseUpdatedResponse
+import br.com.blz.testjava.domain.model.ProductModel
+import br.com.blz.testjava.domain.model.WarehouseModel
+import org.mapstruct.Mapper
+import org.mapstruct.Mapping
+import org.mapstruct.Mappings
+import kotlin.collections.ArrayList
+
+<span class="fc" id="L21">@Mapper(componentModel = &quot;spring&quot;)</span>
+<span class="fc" id="L22">abstract class ProductMapper {</span>
+
+  @Mapping(target = &quot;warehouses&quot;, source = &quot;inventory.warehouses&quot;)
+  abstract fun toModel(request: ProductInsertRequest):ProductModel
+
+  @Mappings(
+    Mapping(target = &quot;inventory&quot;, expression = &quot;java(buildInsertedInventory(model.getWarehouses()))&quot;),
+    Mapping(target = &quot;isMarketable&quot;, expression = &quot;java(isMarketable(model.getWarehouses()))&quot;)
+  )
+  abstract fun toInsertedResponse(model: ProductModel): ProductInsertedResponse
+
+  @Mapping(target = &quot;warehouses&quot;, source = &quot;request.inventory.warehouses&quot;)
+  abstract fun toModel(request: ProductUpdateRequest, sku: Long):ProductModel
+
+  @Mappings(
+    Mapping(target = &quot;inventory&quot;, expression = &quot;java(buildUpdatedInventory(model.getWarehouses()))&quot;),
+    Mapping(target = &quot;isMarketable&quot;, expression = &quot;java(isMarketable(model.getWarehouses()))&quot;)
+  )
+  abstract fun toUpdatedResponse(model: ProductModel): ProductUpdatedResponse
+
+  @Mappings(
+    Mapping(target = &quot;inventory&quot;, expression = &quot;java(buildFoundedInventory(model.getWarehouses()))&quot;),
+    Mapping(target = &quot;isMarketable&quot;, expression = &quot;java(isMarketable(model.getWarehouses()))&quot;)
+  )
+  abstract fun toSearchResponse(model: ProductModel): ProductSearchResponse
+
+  protected fun buildInsertedInventory(warehouses: MutableList&lt;WarehouseModel&gt;?): ProductInventoryInsertedResponse {
+<span class="fc bfc" id="L49" title="All 4 branches covered.">    val distinctElements = warehouses?.toSet() ?: emptySet()</span>
+<span class="fc" id="L50">    val response :MutableList&lt;ProductWarehouseInsertedResponse&gt; = ArrayList()</span>
+<span class="fc" id="L51">    distinctElements.forEach { response.add(ProductWarehouseInsertedResponse(it.locality, it.quantity, it.type)) }</span>
+<span class="pc bpc" id="L52" title="1 of 2 branches missed.">    val quantity = response.map { it.quantity }.fold(0L){a, e -&gt; a.plus(e?:0) }</span>
+<span class="fc" id="L53">    return ProductInventoryInsertedResponse(quantity, response)</span>
+  }
+
+  protected fun buildUpdatedInventory(warehouses: MutableList&lt;WarehouseModel&gt;?): ProductInventoryUpdatedResponse {
+<span class="fc bfc" id="L57" title="All 4 branches covered.">    val distinctElements = warehouses?.toSet() ?: emptySet()</span>
+<span class="fc" id="L58">    val response :MutableList&lt;ProductWarehouseUpdatedResponse&gt; = ArrayList()</span>
+<span class="fc" id="L59">    distinctElements.forEach { response.add(ProductWarehouseUpdatedResponse(it.locality, it.quantity, it.type)) }</span>
+<span class="pc bpc" id="L60" title="1 of 2 branches missed.">    val quantity = response.map { it.quantity }.fold(0L){a, e -&gt; a.plus(e?:0) }</span>
+<span class="fc" id="L61">    return ProductInventoryUpdatedResponse(quantity, response)</span>
+  }
+
+  protected fun buildFoundedInventory(warehouses: MutableList&lt;WarehouseModel&gt;?): ProductInventorySearchResponse {
+<span class="fc bfc" id="L65" title="All 4 branches covered.">    val distinctElements = warehouses?.toSet() ?: emptySet()</span>
+<span class="fc" id="L66">    val response :MutableList&lt;ProductWarehouseSearchResponse&gt; = ArrayList()</span>
+<span class="fc" id="L67">    distinctElements.forEach { response.add(ProductWarehouseSearchResponse(it.locality, it.quantity, it.type)) }</span>
+<span class="pc bpc" id="L68" title="1 of 2 branches missed.">    val quantity = response.map { it.quantity }.fold(0L){a, e -&gt; a.plus(e?:0) }</span>
+<span class="fc" id="L69">    return ProductInventorySearchResponse(quantity, response)</span>
+  }
+
+  fun isMarketable(warehouses: MutableList&lt;WarehouseModel&gt;?):Boolean =
+<span class="pc bpc" id="L73" title="1 of 6 branches missed.">    warehouses?.map { it.quantity }?.fold(0L) { acc, l -&gt; acc.plus(l?:0) }?:0 &gt; 0L</span>
+
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

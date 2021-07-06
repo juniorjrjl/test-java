@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ProductQueryService.kt</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">test-java</a> &gt; <a href="index.source.html" class="el_package">br.com.blz.testjava.domain.service.query</a> &gt; <span class="el_source">ProductQueryService.kt</span></div><h1>ProductQueryService.kt</h1><pre class="source lang-java linenums">package br.com.blz.testjava.domain.service.query
+
+import br.com.blz.testjava.domain.exception.ProductNotFoundException
+import br.com.blz.testjava.domain.model.ProductModel
+import br.com.blz.testjava.domain.repository.ProductRepository
+import br.com.blz.testjava.domain.service.ProductService
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
+import org.springframework.context.MessageSource
+import org.springframework.context.i18n.LocaleContextHolder
+import org.springframework.stereotype.Service
+import reactor.core.publisher.Mono
+
+<span class="fc" id="L14">@Service</span>
+<span class="fc" id="L15">class ProductQueryService(private val productRepository: ProductRepository, private val messageSource: MessageSource) {</span>
+
+  companion object {
+<span class="fc" id="L18">    private val log: Logger = LoggerFactory.getLogger(ProductQueryService::class.java)</span>
+  }
+
+<span class="fc" id="L21">  fun findBySku(sku: Long): Mono&lt;ProductModel&gt; = productRepository.findBySku(sku)</span>
+<span class="fc" id="L22">    .doFirst { log.info(&quot; ==== try to get a product with sku [{}]&quot;, sku) }</span>
+<span class="fc" id="L23">    .switchIfEmpty(Mono.error(ProductNotFoundException(messageSource.getMessage(&quot;ProductNotFoundException.message&quot;,</span>
+<span class="fc" id="L24">      arrayOf(sku), LocaleContextHolder.getLocale()))))</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
